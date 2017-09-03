@@ -25,6 +25,7 @@ scriptdir = os.path.dirname(os.path.abspath(__file__))
 reader = codecs.getreader('utf8')
 writer = codecs.getwriter('utf8')
 
+
 def prepfile(fh, code):
   if type(fh) is str:
     fh = open(fh, code)
@@ -38,6 +39,7 @@ def prepfile(fh, code):
       sys.stderr.write("I didn't understand code "+code+"\n")
       sys.exit(1)
   return ret
+
 
 def addonoffarg(parser, arg, dest=None, default=True, help="TODO"):
   ''' add the switches --arg and --no-arg that set parser.arg to true/false, respectively'''
