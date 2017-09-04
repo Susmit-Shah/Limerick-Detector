@@ -1,5 +1,6 @@
 import nltk
 import sys
+import string
 from nltk.tokenize import word_tokenize
 
 cmu_dic = nltk.corpus.cmudict.dict()
@@ -17,7 +18,7 @@ def syllable_counter(word):
         min_count_syllables = sys.maxint
 
         all_pronounciations = cmu_dic[word]         # list containing
-        print "All Pronouce : ", all_pronounciations
+        #print "All Pronouce : ", all_pronounciations
         min_syllable_count = sys.maxint
         for x in all_pronounciations:
             each = str(x)
@@ -27,7 +28,7 @@ def syllable_counter(word):
                 answer = x
 
         print "Answer :: ", answer
-        print "Syllable :: ", min_syllable_count
+        print "Syllable :: ", min_syllable_count, "\n"
         return min_syllable_count
     else:
         print("Not Found")
@@ -91,14 +92,42 @@ def is_limerick(text):
 
     lines = text.split("\n")
     tokenized_lines = []
+    num_syllables_list = []
     print(lines)
     if len(lines) < 5:
         print("Less than 5 lines.")
         return False
     else:
         for each_line in lines:
-            tokenized_lines.append(word_tokenize(each_line.strip('.,')))
+            tokenized_lines.append(word_tokenize(each_line.strip(string.punctuation)))
         print("Hi", tokenized_lines)
+
+        for each_line in tokenized_lines:
+            count = 0
+            for each_word in each_line:
+                if each_word not in string.punctuation:
+                    count += syllable_counter(each_word)
+            num_syllables_list.append(count)
+        print("Syllables List :: ", num_syllables_list)
+
+        # Additionally, the following syllable constraints should be observed:
+        # * No line should have fewer than 4 syllables
+        if min(num_syllables_list) < 4:
+            return False
+
+        # * No two A lines should differ in their number of syllables by more than two.
+        if abs(num_syllables_list[0] - num_syllables_list[1]) > 2 or abs(num_syllables_list[0] - num_syllables_list[4]) > 2 or abs(num_syllables_list[1] - num_syllables_list[4]) > 2:
+            return False
+
+        # * The B lines should differ in their number of syllables by no more than two.
+        if abs(num_syllables_list[2] - num_syllables_list[3]) > 2:
+            return False
+
+        # * Each of the B lines should have fewer syllables than each of the A lines.
+        min_of_A = min(num_syllables_list[0], num_syllables_list[1], num_syllables_list[4])
+        print("Min of A :: ",  min_of_A)
+        if num_syllables_list[2] > min_of_A or num_syllables_list[3] > min_of_A:
+            return False
 
         if is_rhyme(tokenized_lines[0][-1], tokenized_lines[1][-1]) and \
                 is_rhyme(tokenized_lines[2][-1], tokenized_lines[3][-1]) and \
@@ -124,4 +153,5 @@ def is_limerick(text):
 #print("Removed Consonent :: ", remove_consonent(cmu_dic["expire"][0]))
 #is_rhyme("chime", "rhyme")
 fh = open("tp.txt","r")
-is_limerick(fh.read())
+print(is_limerick(fh.read()))
+print(string.punctuation)

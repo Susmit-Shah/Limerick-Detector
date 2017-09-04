@@ -129,9 +129,9 @@ Front page, sporting section and all."""
         try: self.assertEqual(self.ld.is_limerick(d), False)
         except: s.append('d')
         try: self.assertEqual(self.ld.is_limerick(f), False)
-        except: s.append('f')
-        try: self.assertEqual(self.ld.is_limerick(e), True)
         except: s.append('e')
+        try: self.assertEqual(self.ld.is_limerick(e), True)
+        except: s.append('f')
         try: self.assertEqual(self.ld.is_limerick(g), True)
         except: s.append('g')
 
