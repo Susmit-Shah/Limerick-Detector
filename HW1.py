@@ -1,5 +1,6 @@
 import nltk
 import sys
+import re
 import string
 from nltk.tokenize import word_tokenize
 
@@ -12,12 +13,10 @@ cmu_dic = nltk.corpus.cmudict.dict()
 def syllable_counter(word):
 
     word = word.lower().strip()
-    value=1
     if word in cmu_dic.keys():
         # print cmu_dic[word]
-        min_count_syllables = sys.maxint
 
-        all_pronounciations = cmu_dic[word]         # list containing
+        all_pronounciations = cmu_dic[word]         # list containing all pronounciation
         #print "All Pronouce : ", all_pronounciations
         min_syllable_count = sys.maxint
         for x in all_pronounciations:
@@ -99,7 +98,8 @@ def is_limerick(text):
         return False
     else:
         for each_line in lines:
-            tokenized_lines.append(word_tokenize(each_line.strip(string.punctuation)))
+            tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation))
+            tokenized_lines.append(tokenized_line)
         print("Hi", tokenized_lines)
 
         for each_line in tokenized_lines:
@@ -131,20 +131,21 @@ def is_limerick(text):
 
         if is_rhyme(tokenized_lines[0][-1], tokenized_lines[1][-1]) and \
                 is_rhyme(tokenized_lines[2][-1], tokenized_lines[3][-1]) and \
-                is_rhyme(tokenized_lines[1][-1], tokenized_lines[4][-1]):
+                is_rhyme(tokenized_lines[1][-1], tokenized_lines[4][-1]) and not \
+                is_rhyme(tokenized_lines[0][-1], tokenized_lines[2][-1]):
             print("It is a limerick")
             return True
         else:
             print("It is not a limerick")
             return False
 
-        # line1 = word_tokenize(lines[0])
-        # line2 = word_tokenize(lines[1])
-        # line3 = word_tokenize(lines[2].strip(',.'))
-        # line4 = word_tokenize(lines[3])
-        # line5 = word_tokenize(lines[4])
-        # print(line1, line2, line3, line4, line5)
 
+def apostrophe_tokenize(text_line):
+
+    r = re.compile("[^\w\s']")
+    new_text = r.sub("", text_line)
+    tokenized_text = new_text.split(" ")
+    return tokenized_text
 
 #print(syllable_counter("thrive  "))
 #syllable_counter("impair")
@@ -154,4 +155,4 @@ def is_limerick(text):
 #is_rhyme("chime", "rhyme")
 fh = open("tp.txt","r")
 print(is_limerick(fh.read()))
-print(string.punctuation)
+#print(string.punctuation)
