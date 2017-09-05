@@ -8,6 +8,7 @@ else:
   izip = zip
 from collections import defaultdict as dd
 import re
+import string
 import os.path
 import gzip
 import tempfile
@@ -67,9 +68,38 @@ class LimerickDetector:
 
         # TODO: provide an implementation!
 
+        word = word.lower().strip()
+        if word in self._pronunciations.keys():
 
+            all_pronounciations = self._pronunciations[word]  # list containing all pronounciations
+            # print "All Pronouce : ", all_pronounciations
+            min_syllable_count = sys.maxint
+            for each_pronounciation in all_pronounciations:
+                each = str(each_pronounciation)
+                syllable_count = each.count('0') + each.count('1') + each.count('2')
+                if syllable_count < min_syllable_count:
+                    min_syllable_count = syllable_count
+                    selected_pronounciation = each_pronounciation
 
-        return 1
+            #print "Selected Pronounciation :: ", selected_pronounciation
+            #print "Syllable :: ", min_syllable_count, "\n"
+            return min_syllable_count
+        else:
+            #print("Not Found")
+            return 1
+
+    def remove_consonent(self, pronounciation):
+
+        # #print(pronounciation)
+        while pronounciation:
+            first_sound = str(pronounciation[0])
+            if first_sound.count('0') or first_sound.count('1') or first_sound.count('2'):
+                # #print("BREAK")
+                break
+            else:
+                # #print(first_sound)
+                pronounciation.pop(0)
+        return pronounciation
 
     def rhymes(self, a, b):
         """
@@ -79,7 +109,40 @@ class LimerickDetector:
 
         # TODO: provide an implementation!
 
-        return False
+        a = a.strip()
+        b = b.strip()
+        if a in self._pronunciations.keys() and b in self._pronunciations.keys():
+            a_all_pronounciations = self._pronunciations[a]
+            b_all_pronounciations = self._pronunciations[b]
+            # #print("All a pronounciations :: ", a_all_pronounciations)
+            # #print("All b pronounciations :: ", b_all_pronounciations)
+            for each_pronounciation_a in a_all_pronounciations:
+                for each_pronounciation_b in b_all_pronounciations:
+                    a1 = self.remove_consonent(each_pronounciation_a)
+                    b1 = self.remove_consonent(each_pronounciation_b)
+
+                    # get min of a, b
+                    if len(a1) < len(b1):
+                        small = str(a1)
+                        large = str(b1)
+                    else:
+                        small = str(b1)
+                        large = str(a1)
+                    # #print("S :: ", small)
+                    # #print("L :: ", large)
+
+                    # check if min is suffix of/ends with other
+                    if large.endswith(small[1:]):               # [1:] removes '[' present at start
+                        # #print("Rhymes\n\n")
+                        return True
+                    else:
+                        pass
+                        # #print("Doesn't rhymes\n\n")
+            # #print("Doesn't rhymes\n\n")
+            return False
+        else:
+            # #print("Not Found")
+            return False
 
     def is_limerick(self, text):
         """
@@ -103,7 +166,68 @@ class LimerickDetector:
 
         """
         # TODO: provide an implementation!
+
+        text = text.strip(string.punctuation + '\n ')
+        lines = text.split("\n")
+        tokenized_lines = []
+        num_syllables_list = []
+        print "All Lines :: ", lines
+        if len(lines) < 5:
+            print("Less than 5 lines.")
+            return False
+        else:
+            for each_line in lines:
+                # tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
+                tokenized_line = word_tokenize(each_line.strip(string.punctuation+" "))
+                tokenized_lines.append(tokenized_line)
+            print("Tokenized Lines :: ", tokenized_lines)
+
+            for each_line in tokenized_lines:
+                count = 0
+                for each_word in each_line:
+                    if each_word not in string.punctuation:
+                        count += self.num_syllables(each_word)
+                num_syllables_list.append(count)
+            print("Syllables List :: ", num_syllables_list)
+
+            # Additionally, the following syllable constraints should be observed:
+            # * No line should have fewer than 4 syllables
+            if min(num_syllables_list) < 4:
+                return False
+
+            # * No two A lines should differ in their number of syllables by more than two.
+            if abs(num_syllables_list[0] - num_syllables_list[1]) > 2 or abs(
+                            num_syllables_list[0] - num_syllables_list[4]) > 2 or abs(
+                        num_syllables_list[1] - num_syllables_list[4]) > 2:
+                return False
+
+            # * The B lines should differ in their number of syllables by no more than two.
+            if abs(num_syllables_list[2] - num_syllables_list[3]) > 2:
+                return False
+
+            # * Each of the B lines should have fewer syllables than each of the A lines.
+            min_of_A = min(num_syllables_list[0], num_syllables_list[1], num_syllables_list[4])
+            print("Min of A :: ", min_of_A)
+            if num_syllables_list[2] > min_of_A or num_syllables_list[3] > min_of_A:
+                return False
+
+            if self.rhymes(tokenized_lines[0][-1], tokenized_lines[1][-1]) and \
+                    self.rhymes(tokenized_lines[2][-1], tokenized_lines[3][-1]) and \
+                    self.rhymes(tokenized_lines[1][-1], tokenized_lines[4][-1]) and not \
+                    self.rhymes(tokenized_lines[0][-1], tokenized_lines[2][-1]):
+                print("It is a limerick")
+                return True
+            else:
+                print("It is not a limerick")
+                return False
+
         return False
+
+    def apostrophe_tokenize(self, text_line):
+        r = re.compile("[^\w\s']")
+        new_text = r.sub("", text_line)
+        tokenized_text = new_text.split(" ")
+        return tokenized_text
 
 
 # The code below should not need to be modified

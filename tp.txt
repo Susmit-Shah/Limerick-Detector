@@ -1,5 +1,7 @@
-An exceedingly fat friend of can't,
-When asked at what hour he'd pant,
-Replied, "At eleven,
-At three, five, and seven,
-And eight and a quarter past can't
+"""
+a woman whose friends called a prude
+on a lark when bathing all nude
+saw a man come along
+and unless we are wrong
+you expected this line to be lewd
+        """

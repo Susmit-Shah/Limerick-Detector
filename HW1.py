@@ -26,7 +26,7 @@ def syllable_counter(word):
                 min_syllable_count = syllable_count
                 answer = x
 
-        print "Answer :: ", answer
+        print "Selected Pronounciation :: ", answer
         print "Syllable :: ", min_syllable_count, "\n"
         return min_syllable_count
     else:
@@ -78,9 +78,11 @@ def is_rhyme(a, b):
                     print("Rhymes\n\n")
                     return True
                 else:
-                    print("Doesn't rhymes\n\n")
-                    return False
-                    #return False
+                    print("Doesn't Rhymes\n")
+
+        print("Doesn't rhymes\n\n")
+        return False
+        #return False
 
     else:
         print("Not Found")
@@ -89,16 +91,18 @@ def is_rhyme(a, b):
 
 def is_limerick(text):
 
+    text = text.strip(string.punctuation+'\n ')
     lines = text.split("\n")
     tokenized_lines = []
     num_syllables_list = []
-    print(lines)
+    print "All Lines :: ", lines
     if len(lines) < 5:
         print("Less than 5 lines.")
         return False
     else:
         for each_line in lines:
-            tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation))
+            # tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
+            tokenized_line = word_tokenize(each_line.strip(string.punctuation+" "))
             tokenized_lines.append(tokenized_line)
         print("Hi", tokenized_lines)
 
