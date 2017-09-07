@@ -171,16 +171,16 @@ class LimerickDetector:
         lines = text.split("\n")
         tokenized_lines = []
         num_syllables_list = []
-        print "All Lines :: ", lines
+        # #print "All Lines :: ", lines
         if len(lines) < 5:
-            print("Less than 5 lines.")
+            # #print("Less than 5 lines.")
             return False
         else:
             for each_line in lines:
-                # tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
+                #tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
                 tokenized_line = word_tokenize(each_line.strip(string.punctuation+" "))
                 tokenized_lines.append(tokenized_line)
-            print("Tokenized Lines :: ", tokenized_lines)
+            # #print("Tokenized Lines :: ", tokenized_lines)
 
             for each_line in tokenized_lines:
                 count = 0
@@ -188,7 +188,7 @@ class LimerickDetector:
                     if each_word not in string.punctuation:
                         count += self.num_syllables(each_word)
                 num_syllables_list.append(count)
-            print("Syllables List :: ", num_syllables_list)
+            # #print("Syllables List :: ", num_syllables_list)
 
             # Additionally, the following syllable constraints should be observed:
             # * No line should have fewer than 4 syllables
@@ -207,7 +207,7 @@ class LimerickDetector:
 
             # * Each of the B lines should have fewer syllables than each of the A lines.
             min_of_A = min(num_syllables_list[0], num_syllables_list[1], num_syllables_list[4])
-            print("Min of A :: ", min_of_A)
+            # #print("Min of A :: ", min_of_A)
             if num_syllables_list[2] > min_of_A or num_syllables_list[3] > min_of_A:
                 return False
 
@@ -215,10 +215,10 @@ class LimerickDetector:
                     self.rhymes(tokenized_lines[2][-1], tokenized_lines[3][-1]) and \
                     self.rhymes(tokenized_lines[1][-1], tokenized_lines[4][-1]) and not \
                     self.rhymes(tokenized_lines[0][-1], tokenized_lines[2][-1]):
-                print("It is a limerick")
+                # #print("It is a limerick")
                 return True
             else:
-                print("It is not a limerick")
+                # #print("It is not a limerick")
                 return False
 
         return False
@@ -229,6 +229,32 @@ class LimerickDetector:
         tokenized_text = new_text.split(" ")
         return tokenized_text
 
+    def guess_syllables(self, word):
+        vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+        s = 0
+        for i in range(0, len(word)):
+            if i == 0 and word[i] in vowels:
+                s += 1
+            elif word[i] in vowels and word[i - 1] not in vowels:
+                s += 1
+
+        if word.endswith('le') and word[-3] not in vowels:
+            s += 1
+
+        if word.endswith('e') and word[-2] not in vowels:
+            s -= 1
+
+        #print word[-2]
+        #print word[-3]
+        print s
+        return int(s)
+
+
+def apostrophe_tokenize(text_line):
+    r = re.compile("[^\w\s']")
+    new_text = r.sub("", text_line)
+    tokenized_text = new_text.split(" ")
+    return tokenized_text
 
 # The code below should not need to be modified
 def main():

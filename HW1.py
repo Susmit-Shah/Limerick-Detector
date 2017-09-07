@@ -101,8 +101,8 @@ def is_limerick(text):
         return False
     else:
         for each_line in lines:
-            # tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
-            tokenized_line = word_tokenize(each_line.strip(string.punctuation+" "))
+            tokenized_line = apostrophe_tokenize(each_line.strip(string.punctuation+" "))
+            #tokenized_line = word_tokenize(each_line.strip(string.punctuation+" "))
             tokenized_lines.append(tokenized_line)
         print("Hi", tokenized_lines)
 
@@ -151,12 +151,34 @@ def apostrophe_tokenize(text_line):
     tokenized_text = new_text.split(" ")
     return tokenized_text
 
+def guess_syllables(word):
+    vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+    s = 0
+    for i in range(0, len(word)):
+        if i == 0 and word[i] in vowels:
+            s += 1
+        elif word[i] in vowels and word[i-1] not in vowels:
+            s += 1
+
+    if word.endswith('le') and word[-3] not in vowels:
+        s += 1
+
+    if word.endswith('e') and word[-2] not in vowels:
+        s -= 1
+
+    print word[-2]
+    print word[-3]
+    print s
+
 #print(syllable_counter("thrive  "))
-#syllable_counter("impair")
+#syllable_counter("biscuit")
 #print(syllable_counter("fire"))
 
 #print("Removed Consonent :: ", remove_consonent(cmu_dic["expire"][0]))
-#is_rhyme("chime", "rhyme")
+is_rhyme("dreams", "phonemes")
 fh = open("tp.txt","r")
-print(is_limerick(fh.read()))
+#print(is_limerick(fh.read()))
+
+
+#guess_syllables("biscuit")
 #print(string.punctuation)

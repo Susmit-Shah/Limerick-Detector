@@ -13,8 +13,29 @@ def ap(text_line):
     return tokenized_text
 
 
+def guess_syllables(word):
+    vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+    s = 0
+    for i in range(0, len(word)):
+        if i == 0 and word[i] in vowels:
+            s += 1
+        elif word[i] in vowels and word[i-1] not in vowels:
+            s += 1
+
+    if word.endswith('le') and word[-3] not in vowels:
+        s += 1
+
+    elif word.endswith('e') and word[-2] not in vowels:
+        s -= 1
+
+    print word[-2]
+    print word[-3]
+    print s
+
+
 fh = open("tp.txt","r")
 lines = fh.read().split("\n")
 print lines
-for x in lines:
-    print ap(x), "\n"
+guess_syllables('pronunciation')
+#for x in lines:
+    #print ap(x), "\n"

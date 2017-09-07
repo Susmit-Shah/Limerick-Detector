@@ -70,6 +70,35 @@ class TestSequenceFunctions(unittest.TestCase):
         print '\nNumber of failed syllables tests:', str(len(s))
         if len(s)!=0: print 'Failed syllables tests:', ','.join([str(x) for x in s])
 
+    def test_guess_syllables(self):
+        s = []
+        try: self.assertEqual(self.ld.guess_syllables("dog"), 1)
+        except: s.append(1)
+        try: self.assertEqual(self.ld.guess_syllables("asdf"), 1)
+        except: s.append(2)
+        try: self.assertEqual(self.ld.guess_syllables("letter"), 2)
+        except: s.append(3)
+        try: self.assertEqual(self.ld.guess_syllables("washington"), 3)
+        except: s.append(4)
+        try: self.assertEqual(self.ld.guess_syllables("dock"), 1)
+        except: s.append(5)
+        try: self.assertEqual(self.ld.guess_syllables("dangle"), 2)
+        except: s.append(6)
+        try: self.assertEqual(self.ld.guess_syllables("thrive"), 1)
+        except: s.append(7)
+        try: self.assertEqual(self.ld.guess_syllables("fly"), 1)
+        except: s.append(8)
+        try: self.assertEqual(self.ld.guess_syllables("placate"), 2)
+        except: s.append(9)
+        try: self.assertEqual(self.ld.guess_syllables("renege"), 2)
+        except: s.append(10)
+        try: self.assertEqual(self.ld.guess_syllables("reluctant"), 3)
+        except: s.append(11)
+
+        print '\nNumber of failed guess syllables tests:', str(len(s))
+        if len(s)!=0: print 'Failed guess syllables tests:', ','.join([str(x) for x in s])
+
+
     def test_examples(self):
 
         a = """
@@ -117,6 +146,24 @@ And burned her entire
 Front page, sporting section and all."""
 
         h = "dog\ndog\ndog\ndog\ndog"
+
+        i = """There was a young lady one don't,
+        Who wore a newspaper dress to a won't.
+        The dress caught can't
+        And burned her pant
+        Front page, sporting section and don't."""
+
+        j = """There was a young lady one coundn't
+        Who wore a newspaper dress to a shouldn't.
+        The dress caught fire
+        And burned her entire
+        Front page, sporting section and wouldn't."""
+
+        k = """There was a young lady one fall
+        Who wore a newspaper dress to a ball.
+        The dress caught fire
+        And burned her entire
+        Front page, sporting section and all."""
 
         s = []
 
