@@ -246,7 +246,7 @@ class LimerickDetector:
 
         #print word[-2]
         #print word[-3]
-        print s
+        #print s
         return int(s)
 
 

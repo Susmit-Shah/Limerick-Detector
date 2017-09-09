@@ -38,6 +38,58 @@ class TestSequenceFunctions(unittest.TestCase):
         except: s.append(14)
         try: self.assertEqual(self.ld.rhymes("cup", "duck"), False)
         except: s.append(15)
+        try:
+            self.assertEqual(self.ld.rhymes("dog", "dog"), True)
+        except:
+            s.append(16)
+        try:
+            self.assertEqual(self.ld.rhymes("train", "plane"), True)
+        except:
+            s.append(17)
+        try:
+            self.assertEqual(self.ld.rhymes("thicket", "it"), True)
+        except:
+            s.append(18)
+        try:
+            self.assertEqual(self.ld.rhymes("thicket", "cricket"), True)
+        except:
+            s.append(19)
+        try:
+            self.assertEqual(self.ld.rhymes("conspire", "fire"), True)
+        except:
+            s.append(20)
+        try:
+            self.assertEqual(self.ld.rhymes("along", "wrong"), True)
+        except:
+            s.append(21)
+        try:
+            self.assertEqual(self.ld.rhymes("eyes", "oversize"), True)
+        except:
+            s.append(22)
+        try:
+            self.assertEqual(self.ld.rhymes("affinity", "infinity"), False)
+        except:
+            s.append(23)
+        try:
+            self.assertEqual(self.ld.rhymes("fly", "butterfly"), False)
+        except:
+            s.append(24)
+        try:
+            self.assertEqual(self.ld.rhymes("imperia", "asia"), False)
+        except:
+            s.append(25)
+        try:
+            self.assertEqual(self.ld.rhymes("footwear", "impair"), False)
+        except:
+            s.append(26)
+        try:
+            self.assertEqual(self.ld.rhymes("anatomical", "economical"), False)
+        except:
+            s.append(27)
+        try:
+            self.assertEqual(self.ld.rhymes("reader", "higher"), False)
+        except:
+            s.append(28)
 
         print '\nNumber of failed rhyme tests:', str(len(s))
         if len(s)!=0: print 'Failed rhyme tests:', ','.join([str(x) for x in s])
